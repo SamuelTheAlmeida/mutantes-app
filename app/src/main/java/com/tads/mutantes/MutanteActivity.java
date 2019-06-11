@@ -2,6 +2,9 @@ package com.tads.mutantes;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.ImageView;
@@ -66,8 +69,17 @@ public class MutanteActivity extends AppCompatActivity implements Response.Liste
         try {
             JSONObject jsonObject = new JSONObject(response.toString());
             Context context = imagem.getContext();
-            int idResource = context.getResources().getIdentifier("res_" + String.valueOf(jsonObject.getString("id")), "drawable", context.getPackageName());
-            imagem.setImageResource(idResource);
+            int idResource = context.getResources().getIdentifier("res_" + String.valueOf(idMutante), "drawable", context.getPackageName());
+            if (idResource > 0) {
+                imagem.setImageResource(idResource);
+            } else {
+                String photoPath = Environment.getExternalStorageDirectory() + "/Android/data/"
+                        + getApplicationContext().getPackageName() + "/Files" + "/MI_" + String.valueOf(idMutante) + ".jpg";
+                BitmapFactory.Options options = new BitmapFactory.Options();
+                options.inPreferredConfig = Bitmap.Config.ARGB_8888;
+                Bitmap bitmap = BitmapFactory.decodeFile(photoPath, options);
+                imagem.setImageBitmap(bitmap);
+            }
             nome.setText(jsonObject.getString("nome"));
 
             JSONArray habilidadesArray = jsonObject.getJSONArray("habilidades");

@@ -2,6 +2,9 @@ package com.tads.mutantes;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.Environment;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -55,7 +58,19 @@ public class AdapterMutantesPersonalizado extends BaseAdapter {
         //imagem.setImageResource(com.example.mutantes.R.drawable.juggernaut);
         Context context = imagem.getContext();
         int idResource = context.getResources().getIdentifier("res_" + String.valueOf(mutante.getId()), "drawable", context.getPackageName());
-        imagem.setImageResource(idResource);
+        if (idResource > 0) {
+            imagem.setImageResource(idResource);
+        } else {
+            String photoPath = Environment.getExternalStorageDirectory() + "/Android/data/"
+                    + parent.getContext().getPackageName() + "/Files" + "/MI_" + String.valueOf(mutante.getId()) + ".jpg";
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inPreferredConfig = Bitmap.Config.ARGB_8888;
+            Bitmap bitmap = BitmapFactory.decodeFile(photoPath, options);
+            imagem.setImageBitmap(bitmap);
+        }
+
+
+
 
         return view;
     }
