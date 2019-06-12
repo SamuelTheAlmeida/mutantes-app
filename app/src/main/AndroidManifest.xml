@@ -12,7 +12,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".NovoMutante"></activity>
+        <activity android:name=".PesquisarMutante"></activity>
+        <activity android:name=".NovoMutante" />
         <activity android:name=".MutanteActivity" />
         <activity android:name=".SplashScreen">
             <intent-filter>

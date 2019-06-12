@@ -22,4 +22,14 @@ public class Dashboard extends AppCompatActivity {
         Intent it = new Intent(this, NovoMutante.class);
         startActivity(it);
     }
+
+    public void pesquisarMutante(View view) {
+        Intent it = new Intent(this, PesquisarMutante.class);
+        startActivity(it);
+    }
+
+    public void sair(View view) {
+        finish();
+        System.exit(0);
+    }
 }

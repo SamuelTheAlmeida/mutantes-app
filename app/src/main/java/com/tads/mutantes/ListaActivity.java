@@ -1,6 +1,7 @@
 package com.tads.mutantes;
 
 import android.content.Intent;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -28,6 +29,9 @@ public class ListaActivity extends AppCompatActivity implements Response.Listene
     public TextView mTextView;
     List<Mutante> listMutantes;
     ListView listaDeMutantes;
+    private String habilidade;
+    private String acao;
+    private String url;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +39,13 @@ public class ListaActivity extends AppCompatActivity implements Response.Listene
         setContentView(R.layout.activity_lista);
         listMutantes = new ArrayList<Mutante>();
         listaDeMutantes = findViewById(R.id.lista);
+
+        try {
+            habilidade = getIntent().getExtras().getString("habilidade");
+            acao = "pesquisar";
+        } catch (NullPointerException e ) {
+            acao = "listarTodos";
+        }
     }
 
     @Override protected void onStart() {
@@ -44,7 +55,11 @@ public class ListaActivity extends AppCompatActivity implements Response.Listene
         listMutantes.clear();
         // requisicao volley
         mQueue = CustomVolleyRequestQueue.getInstance(this.getApplicationContext()).getRequestQueue();
-        final String url = "http://192.168.25.4:8080/mutantes-api/resources/mutantes/";
+        if (acao.equals("pesquisar")) {
+            url = "http://192.168.25.4:8080/mutantes-api/resources/mutantes/listar/" + habilidade;
+        } else {
+            url = "http://192.168.25.4:8080/mutantes-api/resources/mutantes/";
+        }
         final CustomJSONObjectRequest jsonRequest = new CustomJSONObjectRequest(Request.Method.GET,
                 url,
                 new JSONObject(),
@@ -62,31 +77,39 @@ public class ListaActivity extends AppCompatActivity implements Response.Listene
             JSONObject jsonObject = new JSONObject(response.toString());
             // obtém o array (lista) de mutantes do json
             JSONArray mutantes = jsonObject.getJSONArray("mutantes");
-            // itera sobre o array para preencher a lista de Mutantes
-            for (int i = 0; i < mutantes.length(); i++) {
-                JSONObject mutanteObj = mutantes.getJSONObject(i);
-                Mutante m = new Mutante();
-                m.setId(mutanteObj.getInt("id"));
-                m.setNome(mutanteObj.getString("nome"));
-                listMutantes.add(m);
-            }
-            // preenche a listView com os mutantes
-            AdapterMutantesPersonalizado adapter =
-                    new AdapterMutantesPersonalizado(listMutantes, this);
-            listaDeMutantes.setAdapter(adapter);
-            // seta o evento de click para abrir os detalhes de cada mutante
-            listaDeMutantes.setOnItemClickListener(new AdapterView.OnItemClickListener(){
-                @Override
-                public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-                    //arg2 é o index do item clicado
-                    Mutante m = listMutantes.get(arg2);
-                    Intent it = new Intent(ListaActivity.this, MutanteActivity.class);
-                    Bundle params = new Bundle();
-                    params.putInt("id", m.getId());
-                    it.putExtras(params);
-                    startActivity(it);
+            // verifica os resultados
+            if (mutantes.length() == 0) {
+                final AlertDialog alertDialog = new AlertDialog.Builder(ListaActivity.this).create();
+                alertDialog.setTitle("Pesquisa");
+                alertDialog.setMessage("Sem mutantes com a habilidade pesquisada");
+            } else {
+                // itera sobre o array para preencher a lista de Mutantes
+                for (int i = 0; i < mutantes.length(); i++) {
+                    JSONObject mutanteObj = mutantes.getJSONObject(i);
+                    Mutante m = new Mutante();
+                    m.setId(mutanteObj.getInt("id"));
+                    m.setNome(mutanteObj.getString("nome"));
+                    listMutantes.add(m);
                 }
-            });
+                // preenche a listView com os mutantes
+                AdapterMutantesPersonalizado adapter =
+                        new AdapterMutantesPersonalizado(listMutantes, this);
+                listaDeMutantes.setAdapter(adapter);
+                // seta o evento de click para abrir os detalhes de cada mutante
+                listaDeMutantes.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+                    @Override
+                    public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
+                        //arg2 é o index do item clicado
+                        Mutante m = listMutantes.get(arg2);
+                        Intent it = new Intent(ListaActivity.this, MutanteActivity.class);
+                        Bundle params = new Bundle();
+                        params.putInt("id", m.getId());
+                        it.putExtras(params);
+                        startActivity(it);
+                    }
+                });
+            }
+
         } catch (Exception e) {
             Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
         }
