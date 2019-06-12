@@ -1,5 +1,6 @@
 package com.tads.mutantes;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -77,11 +78,19 @@ public class ListaActivity extends AppCompatActivity implements Response.Listene
             JSONObject jsonObject = new JSONObject(response.toString());
             // obtém o array (lista) de mutantes do json
             JSONArray mutantes = jsonObject.getJSONArray("mutantes");
-            // verifica os resultados
             if (mutantes.length() == 0) {
                 final AlertDialog alertDialog = new AlertDialog.Builder(ListaActivity.this).create();
                 alertDialog.setTitle("Pesquisa");
-                alertDialog.setMessage("Sem mutantes com a habilidade pesquisada");
+                alertDialog.setMessage("Nenhum mutante com essa habilidade!");
+
+                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                onBackPressed();
+                            }
+                        });
+                alertDialog.show();
+
             } else {
                 // itera sobre o array para preencher a lista de Mutantes
                 for (int i = 0; i < mutantes.length(); i++) {
