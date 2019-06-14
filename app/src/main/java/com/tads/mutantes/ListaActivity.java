@@ -57,9 +57,9 @@ public class ListaActivity extends AppCompatActivity implements Response.Listene
         // requisicao volley
         mQueue = CustomVolleyRequestQueue.getInstance(this.getApplicationContext()).getRequestQueue();
         if (acao.equals("pesquisar")) {
-            url = "http://192.168.25.4:8080/mutantes-api/resources/mutantes/listar/" + habilidade;
+            url = Endpoints.ip + "/mutantes-api/resources/mutantes/listar/" + habilidade;
         } else {
-            url = "http://192.168.25.4:8080/mutantes-api/resources/mutantes/";
+            url = Endpoints.ip + "/mutantes-api/resources/mutantes/";
         }
         final CustomJSONObjectRequest jsonRequest = new CustomJSONObjectRequest(Request.Method.GET,
                 url,
@@ -98,6 +98,7 @@ public class ListaActivity extends AppCompatActivity implements Response.Listene
                     Mutante m = new Mutante();
                     m.setId(mutanteObj.getInt("id"));
                     m.setNome(mutanteObj.getString("nome"));
+                    m.setFoto(mutanteObj.getString("foto"));
                     listMutantes.add(m);
                 }
                 // preenche a listView com os mutantes

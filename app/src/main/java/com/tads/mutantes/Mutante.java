@@ -5,16 +5,15 @@ import java.io.Serializable;
 public class Mutante implements Serializable {
     private int id;
     private String nome;
-    private String urlFoto;
     private Usuario usuario;
+    private String foto;
 
     public Mutante() {
 
     }
 
-    public Mutante(String nome, String urlFoto, Usuario usuario) {
+    public Mutante(String nome, Usuario usuario) {
         this.nome = nome;
-        this.urlFoto = urlFoto;
         this.usuario = usuario;
     }
 
@@ -35,12 +34,12 @@ public class Mutante implements Serializable {
         this.nome = nome;
     }
 
-    public String getUrlFoto() {
-        return urlFoto;
+    public String getFoto() {
+        return foto;
     }
 
-    public void setUrlFoto(String urlFoto) {
-        this.urlFoto = urlFoto;
+    public void setFoto(String foto) {
+        this.foto = foto;
     }
 
     public Usuario getUsuario() {
