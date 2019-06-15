@@ -57,15 +57,11 @@ public class AdapterMutantesPersonalizado extends BaseAdapter {
         id.setText(String.valueOf(mutante.getId()));
         nome.setText(mutante.getNome());
         //imagem.setImageResource(com.example.mutantes.R.drawable.juggernaut);
-        Context context = imagem.getContext();
-        int idResource = context.getResources().getIdentifier("res_" + String.valueOf(mutante.getId()), "drawable", context.getPackageName());
-        if (idResource > 0) {
-            imagem.setImageResource(idResource);
-        } else {
+
             byte[] decodedString = Base64.decode(mutante.getFoto(), Base64.DEFAULT);
             Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
             imagem.setImageBitmap(decodedByte);
-        }
+
 
 
 

@@ -51,7 +51,7 @@ public class RemoverActivity extends AppCompatActivity {
                     try {
                         result = Boolean.parseBoolean(response.getString("result"));
                     } catch (JSONException e) {
-                        Log.d("json", e.getMessage());
+                        Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
                     }
                     if (result) {
                         Toast.makeText(getApplicationContext(), "Mutante removido com sucesso", Toast.LENGTH_LONG).show();
@@ -62,7 +62,7 @@ public class RemoverActivity extends AppCompatActivity {
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    onBackPressed();
+                    Toast.makeText(getApplicationContext(), error.getMessage(), Toast.LENGTH_LONG).show();
                 }
             }) {
                 @Override
